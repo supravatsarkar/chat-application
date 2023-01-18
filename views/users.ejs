@@ -42,6 +42,10 @@
 
     <%- include('./partials/add-user-modal.ejs'); %>
     <script>
+      const logoutToast = Toastify({
+        text: "Remove success",
+        duration: 2000
+      })
       // remove user 
       async function removeUser(id){
         const response = await fetch(`/users/${id}`, {
@@ -52,7 +56,8 @@
           alert(`Something went wrong!.`);
           console.log('delete user error:', error);
         }else{
-          alert(`${id} deleted success!`);
+          logoutToast.showToast();
+          // alert(`${id} deleted success!`);
           document.getElementById(id).remove();
         }
       }

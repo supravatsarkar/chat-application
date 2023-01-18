@@ -3,6 +3,7 @@ const createHttpError = require('http-errors');
 const User = require('./../../models/People');
 const { unlink } = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 
 // add user
 const addUserValidators = [
@@ -35,7 +36,9 @@ const addUserValidators = [
     .custom(async (value) => {
       try {
         console.log('email value=>', value);
-        const user = await User.findOne({ mobile: value });
+        const user = await User.findOne({
+          mobile: value,
+        });
 
         if (user) {
           // console.log('user=>', user);
@@ -76,7 +79,47 @@ const addUserValidationHandler = function (req, res, next) {
     });
   }
 };
+const removeUserValidation = function () {
+  const validation = [
+    check('id')
+      .isLength({ min: 1 })
+      .withMessage('id is required')
+      .custom(async (value) => {
+        try {
+          console.log('id value=>', value);
+          const isValidId = mongoose.Types.ObjectId.isValid(value);
+          console.log('isValidId=>', isValidId);
+          if (isValidId) {
+            const user = await User.findOne({ _id: value });
+            console.log('user-', user);
+            if (!user) {
+              // console.log('user=>', user);
+              throw createHttpError('User is not exist');
+            }
+          } else {
+            throw createHttpError('Invalid user id!');
+          }
+        } catch (error) {
+          console.log('errror', error);
+          throw createHttpError(error.message);
+        }
+      }),
+  ];
+  return [
+    ...validation,
+    function (req, res, next) {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        console.log('errors=>', errors);
+        next(errors);
+      } else {
+        next();
+      }
+    },
+  ];
+};
 module.exports = {
   addUserValidators,
   addUserValidationHandler,
+  removeUserValidation,
 };

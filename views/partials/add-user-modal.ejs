@@ -82,13 +82,18 @@
       });
     } else {
       // success
-      alert('Success!');
+
       closeModal();
+      // show toastify
+      Toastify({
+        text: 'Add user success!',
+        duration: 1000,
+      }).showToast();
       document.querySelector('p.error').style.display = 'none';
       // reload page after 1/2 sec
       setTimeout(() => {
         location.reload();
-      }, 500);
+      }, 1000);
     }
   };
 </script>

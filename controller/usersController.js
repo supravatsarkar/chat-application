@@ -19,6 +19,8 @@ async function getUsers(req, res, next) {
 async function addUser(req, res, next) {
   try {
     let newUser;
+    console.log('password before hash=>', req.body.password);
+    console.log('password before hash=>', typeof req.body.password);
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     if (req.files && req.files.length > 0) {
       newUser = User({
@@ -52,6 +54,7 @@ async function addUser(req, res, next) {
 // remove user
 async function removeUser(req, res, next) {
   try {
+    console.log('req.params.id->', req.params.id);
     const user = await User.findByIdAndDelete({ _id: req.params.id });
 
     //remove user avatar
