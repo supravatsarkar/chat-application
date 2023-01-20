@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const createError = require('http-errors');
 function checkLogin(req, res, next) {
   let cookies =
     Object.keys(req.signedCookies).length > 0 ? req.signedCookies : null;
@@ -58,7 +59,30 @@ function redirectLogin(req, res, next) {
   }
 }
 
+function requireRole(roles) {
+  return function (req, res, next) {
+    // console.log('req.user=>', req.user);
+    // console.log('roles=>', roles);
+    if (req.user.role && roles.includes(req.user.role)) {
+      next();
+    } else {
+      if (res.locals.html) {
+        next(createError(401, 'You are not authorized to access this page!'));
+      } else {
+        res.status(401).json({
+          errors: {
+            common: {
+              msg: 'You are not authorized!',
+            },
+          },
+        });
+      }
+    }
+  };
+}
+
 module.exports = {
   checkLogin,
   redirectLogin,
+  requireRole,
 };

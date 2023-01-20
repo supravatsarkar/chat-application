@@ -37,7 +37,7 @@ async function login(req, res, next) {
           email: user.email,
           mobile: user.mobile,
           avatar: user.avatar || null,
-          role: 'user',
+          role: user.role || 'user',
         };
         // generate token
         const token = jwt.sign(userObject, process.env.JWT_SECRET, {

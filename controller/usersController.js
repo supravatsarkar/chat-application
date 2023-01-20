@@ -55,7 +55,23 @@ async function addUser(req, res, next) {
 async function removeUser(req, res, next) {
   try {
     console.log('req.params.id->', req.params.id);
-    const user = await User.findByIdAndDelete({ _id: req.params.id });
+
+    let user = await User.findById({ _id: req.params.id });
+
+    console.log('user.role->', user.role);
+    console.log('user.role is admin->', user.role == 'admin');
+    if (user.role == 'admin') {
+      console.log('Admin is not deletable!', user);
+      return res.status(500).json({
+        error: {
+          common: {
+            msg: 'Admin is not deletable!',
+          },
+        },
+      });
+    }
+    user = await User.findByIdAndDelete({ _id: req.params.id });
+    // check if it admin
 
     //remove user avatar
     if (user.avatar) {
@@ -70,6 +86,7 @@ async function removeUser(req, res, next) {
       msg: 'User deleted success!',
     });
   } catch (error) {
+    console.log('error while remove user:-', error);
     res.status(500).json({
       error: {
         common: {

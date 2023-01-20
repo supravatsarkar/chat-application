@@ -31,7 +31,9 @@
               </td>
               <td><%= user.email %></td>
               <td class="manage">
+                <% if(user.role!='admin') { %> 
                 <img src="./images/trash.png" alt="Delete" onclick="removeUser('<%=user._id%>')"/>
+                <% } %> 
               </td>
             </tr>
             <% });%>
@@ -51,10 +53,21 @@
         const response = await fetch(`/users/${id}`, {
           method:'DELETE'
         });
-        const result = response.json();
-        if(result.error){
-          alert(`Something went wrong!.`);
-          console.log('delete user error:', error);
+        const result = await response.json();
+        console.log('remove result',result )
+        if(result.error || response.status !=200){
+
+          if(Object.keys(result.error).length){
+                            Object.keys(result.error).forEach(error=>{
+                                console.log('error', error)
+                                Toastify({
+                                text: result.error[error].msg || 'Something went wrong!',
+                                duration: 2000,
+                                }).showToast();
+                            })
+                        }
+          console.log('delete user error:', result.error);
+          
         }else{
           logoutToast.showToast();
           // alert(`${id} deleted success!`);
