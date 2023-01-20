@@ -32,9 +32,11 @@ async function login(req, res, next) {
       if (isValidPassword) {
         // prepare the user object for generate token
         const userObject = {
+          userid: user._id,
           userName: user.name,
           email: user.email,
           mobile: user.mobile,
+          avatar: user.avatar || null,
           role: 'user',
         };
         // generate token
@@ -58,7 +60,7 @@ async function login(req, res, next) {
         // set local to identify the user
         res.locals.loggedInUser = userObject;
 
-        res.render('inbox');
+        res.redirect('/inbox');
       } else {
         throw createHttpError('Login Failed! Password not matched');
       }

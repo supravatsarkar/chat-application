@@ -5,6 +5,9 @@ const mongoose = require('mongoose');
 const path = require('path');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+const moment = require('moment');
+const http = require('http');
+const cors = require('cors');
 
 // internal modules
 const {
@@ -16,8 +19,21 @@ const usersRouter = require('./router/usersRouter');
 const inboxRouter = require('./router/inboxRouter');
 
 // basic config
+app.use(cors());
+const server = http.createServer(app);
 dotenv.config();
 const port = process.env.PORT || 5000;
+// set comment as app locals
+app.locals.moment = moment;
+
+// socket creation
+const { Server } = require('socket.io');
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:5000',
+  },
+});
+global.io = io;
 
 // database connection
 mongoose
@@ -52,7 +68,7 @@ app.use(notFoundHandler);
 //error handling
 app.use(errorHandler);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log('NODE_ENV', process.env.NODE_ENV);
   console.log(`app listening to port ${port}`);
 });

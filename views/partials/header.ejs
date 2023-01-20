@@ -11,15 +11,30 @@
     <link rel="stylesheet" href="./stylesheets/toastify.css" />
     <link rel="stylesheet" href="./stylesheets/style.css" />
     <script src="./js/toastify.js"></script>
+    <script src="./js/moment.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>).
   </head>
   <body>
     <div class="menu">
+      <% if (loggedInUser && loggedInUser.userName) { %>
       <div class="menu-item"><a href="/inbox">Inbox</a></div>
       <div class="menu-item"><a href="/users">Users</a></div>
-      <% if(loggedInUser.userName){ %>
-
-      <div class="menu-item"><a href="#" onclick="logout()">Logout</a></div>
-      <% } else{ %>
+      <div class="menu-item">
+        <% if (loggedInUser && loggedInUser.avatar) { %>
+        <img
+          src="./uploads/avatars/<%= loggedInUser.avatar %>"
+          alt="<%= loggedInUser.name %>"
+        />
+        <% } else { %>
+        <img src="./images/nophoto.png" alt="<%= loggedInUser.name %>" />
+        <% } %>
+        <a href="#" onclick="logout()">Logout</a>
+        
+      <div class="menu-item" style="font-weight: bold;"><%=loggedInUser.email%></div>
+      </div>
+      <% } else { %>
+      <div class="menu-item"><a href="/inbox">Inbox</a></div>
+      <div class="menu-item"><a href="/users">Users</a></div>
       <div class="menu-item"><a href="/">Login</a></div>
       <% } %>
     </div>
@@ -37,6 +52,12 @@
           window.location.replace('/');
         }, 1000);
       }
+
+      // // socket initialization
+      // const socket = io('<%= process.env.APP_URL %>');
+
+      // socket.on('test', data => {
+      //     console.log('a user connected', data);
+      // })
     </script>
-  </body>
-</html>
+
