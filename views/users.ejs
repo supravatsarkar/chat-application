@@ -33,6 +33,8 @@
               <td class="manage">
                 <% if(user.role!='admin') { %> 
                 <img src="./images/trash.png" alt="Delete" onclick="removeUser('<%=user._id%>')"/>
+                <% } else{ %> 
+                  <img src="./images/user1.png" alt="admin setting"/>
                 <% } %> 
               </td>
             </tr>
