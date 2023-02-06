@@ -93,7 +93,7 @@
           let generatedHtml = '<ul>';
           result.forEach((user) => {
             const avatar = user.avatar
-              ? './uploads/avatars/' + user.avatar
+              ? user.avatar
               : './images/nophoto.png';
 
             generatedHtml += `<li onclick="createConversation('${user._id}', '${user.name}', '${user.avatar}')">
