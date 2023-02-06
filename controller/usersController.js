@@ -25,11 +25,10 @@ async function addUser(req, res, next) {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     if (req.files && req.files.length > 0) {
       // console.log("add user req.files", req.files);
-      const { data } = await hostImageToImageBB(
+      const imageLink = await hostImageToImageBB(
         req.files[0].filename,
         "avatars"
       );
-      const imageLink = data.medium.url;
       console.log("imageLink", imageLink);
       newUser = User({
         ...req.body,

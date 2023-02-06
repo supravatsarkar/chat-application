@@ -181,13 +181,24 @@ async function sendMessage(req, res, next) {
     try {
       // save message text/attachment in databases
       let attachments = null;
+      let promises = [];
       if (req.files && req.files.length > 0) {
-        attachments = [];
-        req.files.forEach(async (file) => {
-          const { data } = await hostImageToImageBB(file.filename, "avatars");
-          attachments.push(data.medium.url);
-        });
+        for (let i = 0; i < req.files.length; i++) {
+          try {
+            const link = hostImageToImageBB(
+              req.files[i].filename,
+              "attachments"
+            );
+            promises.push(link);
+          } catch (error) {
+            console.log("err", error);
+            attachments.push(null);
+          }
+        }
       }
+
+      attachments = await Promise.all(promises);
+      console.log("attachments=>", attachments);
 
       const newMessage = new Message({
         text: req.body.message,

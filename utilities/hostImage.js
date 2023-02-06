@@ -1,9 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
-const apiKey = process.env.IMAGE_BB_API_KEY;
 
 const hostImageToImageBB = (fileName, dir) => {
+  const apiKey = process.env.IMAGE_BB_API_KEY;
+  console.log("IMAGE_BB_API_KEY", apiKey);
   const imagePath = path.join(
     __dirname,
     "..",
@@ -35,7 +36,7 @@ const hostImageToImageBB = (fileName, dir) => {
           .then(function (response) {
             console.log("axios response status", response.data.status);
             console.log("upload success", response.data.success);
-            resolve(response.data);
+            resolve(response.data?.data?.medium?.url);
           })
           .catch(function (error) {
             console.log("axios error", error.message);
